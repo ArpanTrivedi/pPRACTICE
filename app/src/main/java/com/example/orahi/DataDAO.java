@@ -1,5 +1,6 @@
 package com.example.orahi;
 
+
 public class DataDAO {
     String month;
     int stat;
