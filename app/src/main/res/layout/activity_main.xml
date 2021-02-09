@@ -8,17 +8,17 @@
     android:padding="10dp"
     >
 
-<!--    <com.github.mikephil.charting.charts.BarChart-->
-<!--        android:id="@+id/barChart"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        />-->
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/text"
-    android:textColor="#000"
-    android:textSize="20sp"
-    android:text="hello"
-    />
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+<!--<TextView-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:id="@+id/text"-->
+<!--    android:textColor="#000"-->
+<!--    android:textSize="20sp"-->
+<!--    android:text="hello"-->
+<!--    />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
