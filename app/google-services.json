@@ -66,12 +66,20 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:434198596471:android:340be6aeb55eb0b6f76f72",
+        "mobilesdk_app_id": "1:434198596471:android:a16ab97de874bd79f76f72",
         "android_client_info": {
           "package_name": "com.example.orahi"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "434198596471-6thf6go4sa835641bb035467l2o65eos.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.orahi",
+            "certificate_hash": "bd650e06f00da592c43ac8892d5b35ef777101f0"
+          }
+        },
         {
           "client_id": "434198596471-o122q3nlaec8rklui4bvt5hj746pik6e.apps.googleusercontent.com",
           "client_type": 3
