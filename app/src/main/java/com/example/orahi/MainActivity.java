@@ -1,11 +1,17 @@
 package com.example.orahi;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +29,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    DatabaseHelper myDB;
 
     private static final String url = "https://demo5636362.mockable.io/stats";
     public static ProgressDialog progressDialog;
@@ -43,9 +52,58 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         barChart = findViewById(R.id.barChart);
         requestQueue = Volley.newRequestQueue(this);
-        getApiData();
+
+        myDB = new DatabaseHelper(this);
+        getAllData();
     }
 
+//    private void addData() {
+//        boolean isInserted = myDB.insertIntoDB("name", 12);
+//    }
+
+    private void getAllData() {
+        Cursor cursor = myDB.getDataFromDB();
+        StringBuffer stringBuffer = new StringBuffer();
+
+        if (cursor.getCount() == 0) {
+            getApiData();
+        }
+
+
+        List<BarEntry> barEntries = new ArrayList<>();
+        List<String> labelsName = new ArrayList<>();
+        int i = 0;
+        while (cursor.moveToNext()) {
+
+            barEntries.add(new BarEntry(i, cursor.getInt(2)));
+            labelsName.add(cursor.getString(1));
+            i++;
+
+        }
+
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Month Stat");
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        //barDataSet.setColors(ColorTemplate.PASTEL_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(22f);
+        barChart.setFitBars(true);
+        XAxis axis = barChart.getXAxis();
+        axis.setValueFormatter(new IndexAxisValueFormatter(labelsName));
+        axis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
+        axis.setDrawAxisLine(false);
+        axis.setDrawGridLines(false);
+        axis.setGranularity(1f);
+        axis.setLabelCount(labelsName.size());
+        Description description = new Description();
+        description.setText("Month Stat");
+        barChart.setDescription(description);
+        axis.setLabelRotationAngle(270);
+        barChart.animateY(3000);
+        barChart.invalidate();
+    }
     private void getApiData() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
@@ -68,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                         String month = parObj.getString("month");
                         String stat = parObj.getString("stat");
                         int statNumber = Integer.parseInt(stat);
+                        boolean isInserted = myDB.insertIntoDB(month, statNumber);
                         barEntries.add(new BarEntry(i, statNumber));
                         labelsName.add(month);
                     }
@@ -111,4 +170,20 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.logout) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(MainActivity.this, login.class));
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
